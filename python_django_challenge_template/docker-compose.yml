@@ -24,7 +24,6 @@ services:
       context: ./src
       dockerfile: Dockerfile
     container_name: django_backend
-    command: python manage.py runserver 0.0.0.0:8000
     volumes:
       - ./src:/app
     ports:

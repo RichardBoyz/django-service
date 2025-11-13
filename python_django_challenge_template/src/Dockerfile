@@ -21,4 +21,7 @@ EXPOSE 8000
 
 RUN cd turing_backend
 
+COPY backend-entrypoint.sh /app/backend-entrypoint.sh
+RUN ["chmod", "+x", "/app/backend-entrypoint.sh"]
+
 CMD ["/app/backend-entrypoint.sh"]
