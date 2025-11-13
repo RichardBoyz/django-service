@@ -97,3 +97,27 @@ Default URL:
 ```
 http://127.0.0.1:8000/
 ```
+
+---
+
+## Run with Docker Compose
+
+To start the project using Docker Compose:
+
+```bash
+docker-compose up --build
+```
+
+To stop the containers:
+
+```bash
+docker-compose down
+```
+
+## Problem
+
+1. The original project used a single Dockerfile to build the entire environment, including both the database and the backend. In this version, Docker Compose is used to separate the services. Additional time was required to ensure that the backend environment, particularly mysqlclient, works correctly.
+
+2. The backend project’s settings need to be updated so that the application can properly connect when running under Docker Compose. Currently, the example uses 'HOST': 'db', meaning the database host is set to the service name defined in Docker Compose. This configuration can be improved by using os.environ.get() to load the values from environment variables for a more production-ready setup.
+
+3. It is recommended to start the project using Docker Compose, as it allows you to modify the code directly on your local machine through the mounted volume.
