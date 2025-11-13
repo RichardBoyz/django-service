@@ -37,13 +37,16 @@ class AttributeValueSerializer(serializers.ModelSerializer):
 
 
 class AttributeValueExtendedSerializer(serializers.ModelSerializer):
-    attribute_name = serializers.ReadOnlyField(source='attribute.name')
+    attribute_name = serializers.SerializerMethodField()
     attribute_value = serializers.ReadOnlyField(source='value')
 
     class Meta:
         model = AttributeValue
         fields = ('attribute_name', 'attribute_value_id', 'attribute_value')
 
+    def get_attribute_name(self, obj):
+        attr = Attribute.objects.filter(attribute_id=obj.attribute_id).first()
+        return attr.name if attr else None
 
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:

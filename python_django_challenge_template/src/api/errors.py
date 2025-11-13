@@ -66,6 +66,10 @@ COM_10 = Error(code="COM_10", message="", _status=400)
 # ShoppingCart's Errors
 SHP_01 = Error(code="ORD_01", message="Don't exist shoppingCart with this cart_id", _status=404)
 
+# Attribute's Errors
+ATTR_00 = Error(code="ATTR_00", message ="Don't exist attribute with this ID", _status=404)
+ATTR_01 = Error(code="ATTR_01", message ="Don't exist attribute with this product", _status=404)
+
 
 def handle(error: Error):
     error_response = {"error": {

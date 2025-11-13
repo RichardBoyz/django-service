@@ -1,10 +1,13 @@
+import logging
+
+from api import errors
+from api.models import Attribute, AttributeValue, ProductAttribute
+from api.serializers import (AttributeSerializer,
+                             AttributeValueExtendedSerializer,
+                             AttributeValueSerializer)
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from api import errors
-from api.models import Attribute, AttributeValue
-from api.serializers import AttributeSerializer, AttributeValueSerializer, AttributeValueExtendedSerializer
-import logging
 
 logger = logging.getLogger(__name__)
 
@@ -22,11 +25,28 @@ class AttributeViewSet(viewsets.ReadOnlyModelViewSet):
         """
         Get Values Attribute from Attribute ID
         """
-        # TODO: place the code here
+        attribute_id = kwargs.get("attribute_id")
+        values = AttributeValue.objects.filter(attribute_id=attribute_id)
+
+        if not values.exists():
+            return errors.handle(errors.ATTR_00)
+
+        serializer = AttributeValueSerializer(values, many=True)
+        return Response(serializer.data)
 
     @action(detail=False, url_path='inProduct/<int:product_id>')
     def get_attributes_from_product(self, request, *args, **kwargs):
         """
         Get all Attributes with Product ID
         """
-        # TODO: place the code here
+        product_id = kwargs.get("product_id")
+        product_attrs = ProductAttribute.objects.filter(product_id=product_id)
+
+        if not product_attrs.exists():
+            return errors.handle(errors.ATTR_01)
+        
+        value_ids = product_attrs.values_list('attribute_value_id', flat=True)
+        attribute_values = AttributeValue.objects.filter(pk__in = value_ids)
+
+        serializer = AttributeValueExtendedSerializer(attribute_values, many=True)
+        return Response(serializer.data)
