@@ -101,6 +101,16 @@ class ReviewSerializer(serializers.ModelSerializer):
         model = Review
         fields = ('product_id', 'review', 'customer_id', 'rating')
 
+class ReviewOfProductSerializer(serializers.ModelSerializer):
+    name = serializers.SerializerMethodField()
+    class Meta:
+        model = Review
+        fields =('name','review','rating','created_on')
+
+    def get_name(self,obj):
+        product = Product.objects.filter(product_id=obj.product_id).first()
+        return product.name if product else None
+
 
 class ShippingSerializer(serializers.ModelSerializer):
     class Meta:
