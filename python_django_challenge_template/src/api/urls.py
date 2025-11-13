@@ -51,4 +51,9 @@ urlpatterns = [
     path('customers/address', update_address),
     path('customers/creditCard', update_credit_card),
 
+    # Orders
+    # path('orders', orders),
+    # path('orders/<int:order_id>', order),
+    # path('orders/<int:order_id>/details', order_details),
+    path('orders/create', create_order),
 ]

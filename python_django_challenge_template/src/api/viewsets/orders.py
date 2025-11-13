@@ -1,17 +1,20 @@
+import logging
+
+from api import errors
+from api.authentication import UserKeyJWTAuthentication
+from api.models import OrderDetail, Orders
+from api.serializers import (OrdersDetailSerializer, OrdersSaveSerializer,
+                             OrdersSerializer)
 from django.contrib.auth.models import AnonymousUser
 from django.core.mail import EmailMultiAlternatives
 from django.shortcuts import render
 from django.template.loader import render_to_string
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
-from rest_framework.decorators import api_view
+from rest_framework.decorators import (api_view, authentication_classes,
+                                       permission_classes)
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-
-from api import errors
-from api.models import Orders, OrderDetail
-from api.serializers import OrdersSaveSerializer, OrdersSerializer, OrdersDetailSerializer
-import logging
-
 from turing_backend import settings
 
 logger = logging.getLogger(__name__)
@@ -26,11 +29,14 @@ logger = logging.getLogger(__name__)
     }
 ))
 @api_view(['POST'])
+@authentication_classes([UserKeyJWTAuthentication])
+@permission_classes([IsAuthenticated])
 def create_order(request):
     """
     Create a Order
     """
     # TODO: place the code here
+    return Response({'result':'success'})
 
 
 @api_view(['GET'])
