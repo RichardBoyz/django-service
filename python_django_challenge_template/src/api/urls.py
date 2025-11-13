@@ -1,21 +1,25 @@
 import logging
 
-from django.urls import path, include
-from rest_framework import routers
-
 from api.viewsets.attribute import AttributeViewSet
+from api.viewsets.category import CategoryViewSet
 #from api.viewsets.category import CategoryViewSet 
 # TODO: Implement category
-from api.viewsets.customers import create_customer, token_obtain_pair, SocialLoginView, update_address, \
-    update_credit_card, customer, update_customer
+from api.viewsets.customers import (SocialLoginView, create_customer, customer,
+                                    token_obtain_pair, update_address,
+                                    update_credit_card, update_customer)
 from api.viewsets.department import DepartmentViewSet
-from api.viewsets.orders import create_order, order, orders, order_details
+from api.viewsets.orders import create_order, order, order_details, orders
 from api.viewsets.products import ProductViewSet
 from api.viewsets.shipping_region import ShippingRegionViewSet
-from api.viewsets.shoppingcart import generate_cart_id, add_products, get_products, update_quantity, empty_cart, \
-    remove_product, move_to_cart, total_amount, save_for_later, get_saved_products
+from api.viewsets.shoppingcart import (add_products, empty_cart,
+                                       generate_cart_id, get_products,
+                                       get_saved_products, move_to_cart,
+                                       remove_product, save_for_later,
+                                       total_amount, update_quantity)
 from api.viewsets.stripe import charge, webhooks
 from api.viewsets.tax import TaxViewSet
+from django.urls import include, path
+from rest_framework import routers
 
 logger = logging.getLogger(__name__)
 
@@ -26,6 +30,7 @@ router.register(r'attributes', AttributeViewSet)
 router.register(r'products', ProductViewSet)
 router.register(r'tax', TaxViewSet)
 router.register(r'shipping/regions', ShippingRegionViewSet)
+router.register(r'categories', CategoryViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),

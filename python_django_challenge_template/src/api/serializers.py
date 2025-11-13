@@ -1,9 +1,9 @@
+from api.models import (Attribute, AttributeValue, Category, Customer,
+                        Department, OrderDetail, Orders, Product, Review,
+                        Shipping, ShippingRegion, ShoppingCart, Tax)
 from django.contrib.auth.models import User
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-
-from api.models import Department, Category, Attribute, AttributeValue, Product, Customer, Shipping, Tax, ShoppingCart, \
-    Orders, OrderDetail, ShippingRegion, Review
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -166,3 +166,9 @@ class CreditCardSerializer(serializers.Serializer):
 
     class Meta:
         fields = 'credit_card'
+
+
+class CategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = ['category_id', 'name', 'description', 'department_id']

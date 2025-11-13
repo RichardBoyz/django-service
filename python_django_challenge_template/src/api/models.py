@@ -205,3 +205,13 @@ class Tax(models.Model):
     class Meta:
         managed = False
         db_table = 'tax'
+
+class Category(models.Model):
+    category_id = models.AutoField(primary_key=True)
+    department_id = models.IntegerField()
+    name = models.CharField(max_length=100)
+    description = models.CharField(max_length=1000, blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'category'
