@@ -130,6 +130,7 @@ CREATE TABLE `customer` (
   `region`             VARCHAR(100),
   `postal_code`        VARCHAR(100),
   `country`            VARCHAR(100),
+  `user_id`            INT,
   `shipping_region_id` INT           NOT NULL default '1',
   `day_phone`          varchar(100),
   `eve_phone`          varchar(100),
