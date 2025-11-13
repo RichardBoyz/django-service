@@ -5,6 +5,7 @@
 #   * Make sure each ForeignKey and OneToOneField has `on_delete` set to the desired behavior
 #   * Remove `managed = False` lines if you wish to allow Django to create, modify, and delete the table
 # Feel free to rename the models, but don't rename db_table values or field names.
+from django.contrib.auth.models import User
 from django.db import models
 
 
@@ -51,6 +52,9 @@ class Category(models.Model):
 
 
 class Customer(models.Model):
+    # Add user on to one
+    user = models.OneToOneField(User, on_delete=models.CASCADE,null=True)
+
     customer_id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=50)
     email = models.CharField(unique=True, max_length=100)

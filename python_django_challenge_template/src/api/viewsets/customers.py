@@ -2,25 +2,29 @@ import logging
 import re
 from itertools import groupby
 
+from api import errors, serializers
+from api.authentication import UserKeyJWTAuthentication
+from api.models import Customer
+from api.serializers import (CreateCustomerSerializer,
+                             CustomerAddressSerializer, CustomerSerializer,
+                             SocialSerializer, UpdateCustomerSerializer,
+                             UserSerializer)
 from django.contrib.auth import login
-from django.contrib.auth.models import AnonymousUser
+from django.contrib.auth.models import AnonymousUser, User
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from requests.exceptions import HTTPError
 from rest_framework import generics, permissions, status
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.decorators import (api_view, authentication_classes,
+                                       permission_classes)
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenObtainPairView
 from social_core.backends.oauth import BaseOAuth2
-from social_core.exceptions import MissingBackend, AuthTokenError, AuthForbidden
-from social_django.utils import load_strategy, load_backend
-
-from api import errors, serializers
-from api.models import Customer
-from api.serializers import CustomerSerializer, UserSerializer, CreateCustomerSerializer, UpdateCustomerSerializer, \
-    SocialSerializer, CustomerAddressSerializer
+from social_core.exceptions import (AuthForbidden, AuthTokenError,
+                                    MissingBackend)
+from social_django.utils import load_backend, load_strategy
 
 logger = logging.getLogger(__name__)
 
@@ -57,7 +61,42 @@ def create_customer(request):
     Register a customer.
     """
     logger.debug("Creating a customer")
-    # TODO: place the code here
+    data = request.data
+    serializer = CreateCustomerSerializer(data=data)
+    serializer.is_valid(raise_exception=True)
+
+    name = serializer.validated_data["name"]
+    email = serializer.validated_data["email"]
+    password = serializer.validated_data["password"]
+
+    user = User.objects.create_user(
+            username=email,
+            email=email,
+            password=password,
+            first_name=name
+        )
+
+    # Create Customer
+    customer = Customer.objects.create(
+        user=user,
+        name=name,
+        email=email,
+        password=password,
+        shipping_region_id=1  # Default shipping region
+    )
+
+    # Generate JWT
+    refresh = RefreshToken.for_user(user)
+    access_token = str(refresh.access_token)
+
+    customer_data = CustomerSerializer(customer).data
+
+    return Response({
+        "customer": customer_data,
+        "accessToken": access_token,
+        "expiresIn": "24h"
+    }, status=status.HTTP_201_CREATED)
+
 
 
 class TokenObtainPairPatchedView(TokenObtainPairView):
